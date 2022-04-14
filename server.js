@@ -8,6 +8,10 @@ app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
 const { animals } = require("./data/animals");
+// added middleware to the server.  We provide a file path to a location in our app (the public folder) and instruct
+// the server to make these files static resources.  All of the front-end code can now be accessed without having
+// a specific server endpoint created for it.
+app.use(express.static("public"));
 
 
 
@@ -116,6 +120,21 @@ app.post("/api/animals", (req, res) => {
 
         res.json(req.body);
     }
+});
+
+// this get request responds with an HTML page to display in the browser
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/index.html"));
+});
+
+// just /animals for the endpoint because it should serve an HTML page versus using /api/ for JSON data
+// Express isn't opinionated about how routes should be named, it's a system developers must create
+app.get("/animals", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/animals.html"));
+});
+
+app.get("/zookeepers", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/zookeepers.html"));
 });
 
 app.listen(PORT, () => {
